@@ -2,14 +2,12 @@ complex_networks/
 wavelets_and_filter_banks/
 data/interim
 data/processed
-old_src
-old_data
+old
 src/snippits.py
 src/external
 /models
 notebooks
 plan
-readme
 references
 reports
 server
