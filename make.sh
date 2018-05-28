@@ -5,6 +5,9 @@ mkdir models
 mkdir src/external
 
 # Make softlinks
+# lre17_eval contains tel and vast files
+# lre17_dev contains tel and vast files
+# lre17_train contains language folder with the files in them
 lre17_eval=/export/b16/janto/LRE17/corpora/lre17/data/eval/
 lre17_dev=/export/corpora/LDC/LDC2017E23/LDC2017E23_2017_NIST_Language_Recognition_Evaluation_Development_Data/data/dev/
 lre17_train=/export/corpora/LDC/LDC2017E22/LDC2017E22_2017_NIST_Language_Recognition_Evaluation_Training_Data/data/

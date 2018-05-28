@@ -9,8 +9,8 @@ Created on Thu Jan 25 10:50:15 2018
 from torch.utils.data import DataLoader
 import os
 
-from src.data.data_functions import Data_synthesis_1, save_audio_
-from src.features.features_functions import makedir
+from src.data.data_functions import Data_synthesis_1
+from src.features.features_functions import makedir, save_audio_
 from src.datasets.make_dataset_1 import save_preproccesing_parameters
 
 
