@@ -134,7 +134,7 @@ def clean_dataset_4_eval(model, cuda=False, samples=None):
                      batch_size=10, cuda=cuda, samples=samples)
 
 
-def enhance_with_model(experiment_name, loadpath, cuda=False, samples=None):
+def enhance_with_model(experiment_name, loadpath, cuda=False, samples=None, dev_only=False):
     checkpoint = load_to_cpu(loadpath)
     p = checkpoint['p']
     model = p['model_class'](**p['model_kwargs'])
@@ -147,10 +147,11 @@ def enhance_with_model(experiment_name, loadpath, cuda=False, samples=None):
     model.experiment_name = experiment_name  # this is a hack
 
     clean_lre17_dev(model, cuda=cuda, samples=samples)
-    clean_lre17_eval(model, cuda=cuda, samples=samples)
-    clean_dataset_4_eval(model, cuda=cuda, samples=samples)
     clean_lre17tel_dev(model, cuda=cuda, samples=samples)
-    clean_lre17tel_eval(model, cuda=cuda, samples=samples)
+    if not dev_only:
+        clean_lre17_eval(model, cuda=cuda, samples=samples)
+        clean_dataset_4_eval(model, cuda=cuda, samples=samples)
+        clean_lre17tel_eval(model, cuda=cuda, samples=samples)
     # clean_lre17tel_train(model, cuda=cuda, samples=samples)
 
 
@@ -160,11 +161,16 @@ if __name__ == '__main__':
                         help='The experiment name')
     parser.add_argument('loadpath', type=str,
                         help='the loadpath')
+    # parser.add_argument('--cuda', type=bool,
+    #                     help='Use cuda')
+    # parser.add_argument('--dev_only', type=bool,
+    #                     help='Only enhance the devset')
     args = parser.parse_args()
 
     enhance_with_model(experiment_name=args.reference_dir,
                        loadpath=args.degraded_dir,
                        cuda=args.output_path,
+                       # dev_only=False
                        )
 
     # experiment_name = 'BLSTM_A5_27'

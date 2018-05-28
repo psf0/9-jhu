@@ -24,6 +24,9 @@ import matplotlib.pyplot as plt
 from src.data.data_functions import get_SNR_dB
 
 plt.close('all')
+colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+fig_dir = os.path.join('reports', 'figures')
+
 
 #==============================================================================
 # Model training and fitting analysis
@@ -92,10 +95,12 @@ BLSTM_A14_log = load_training_history(os.path.join('models', 'BLSTM_A14', 'train
 
 
 def plot_history(epochs, train_loss, val_loss, title, **kwags):
-    plt.plot(epochs, train_loss, label='_'.join((title, 'train')))
-    plt.plot(epochs, val_loss, label='_'.join((title, 'val')))
+    plt.plot(epochs, train_loss, '-', label='_'.join((title, 'train')))
+    plt.plot(epochs, val_loss, '-', label='_'.join((title, 'val')))
     plt.plot(epochs[np.argmin(val_loss)], val_loss[np.argmin(val_loss)], 'ro')
     plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE')
     print(title, epochs[np.argmin(val_loss)], val_loss[np.argmin(val_loss)])
 
 
@@ -114,9 +119,15 @@ plot_history(**BLSTM_A12_log)
 plot_history(**BLSTM_A13_log)
 plot_history(**BLSTM_A14_log)
 plt.xlim(0, 57)
-plt.savefig('sdf.pdf')
 plt.show()
 
+
+
+plot_history(**BLSTM_A5_log)
+plt.plot(27, BLSTM_A5_log['val_loss'][26], 'ro')
+# plt.plot(14, BLSTM_A5_log['val_loss'][13], 'ro')
+plt.savefig(os.path.join(fig_dir, 'his5_2.png'))
+plt.show()
 
 
 #==============================================================================
@@ -230,9 +241,7 @@ def load_data(path_model_PESQ, path_model_eval, model_name):
 
 
 """
-dict with dataset 2 results
-dict with dataset 3 results
-dict with dataset 4 results
+Crawl all the SE result instead
 """
 
 
@@ -292,6 +301,9 @@ BLSTM_A5_27 = load_data(os.path.join('models', 'BLSTM_A5_27', 'PESQ_results.mat'
 BLSTM_A9_24 = load_data(os.path.join('models', 'BLSTM_A9_24', 'PESQ_results.mat'),
                         os.path.join('models', 'BLSTM_A9_24', 'eval_results.mat'),
                         'BLSTM_A9_24')
+BLSTM_A5_97 = load_data(os.path.join('models', 'BLSTM_A5_97', 'PESQ_results.mat'),
+                        os.path.join('models', 'BLSTM_A5_97', 'eval_results.mat'),
+                        'BLSTM_A5_24')
 BLSTM_A10 = load_data(os.path.join('models', 'BLSTM_A10', 'PESQ_results.mat'),
                       os.path.join('models', 'BLSTM_A10', 'eval_results.mat'),
                       'BLSTM_A10')
@@ -300,16 +312,20 @@ BLSTM_A11 = load_data(os.path.join('models', 'BLSTM_A11', 'PESQ_results.mat'),
                       'BLSTM_A11')
 result_dataset_4 = [dataset_4, OM_LSA_4, BLSTM_A4, BLSTM_A5, BLSTM_A9, BLSTM_A5_27, BLSTM_A9_24, BLSTM_A10, BLSTM_A11]
 result_dataset_4 = [dataset_4, OM_LSA_4, BLSTM_A5_27, BLSTM_A9_24]
-result_A5_overfit = [dataset_4, OM_LSA_4, BLSTM_A5_27]
-epoch_numbers = [8, 14, 15, 16, 18, 19, 20, 24, 26, 28, 49, 68] + [13, 12, 17]
-for epoch in epoch_numbers:
+result_A5_overfit = [dataset_4, OM_LSA_4]
+for epoch in range(0, 110):
     experiment_name = 'BLSTM_A5_{}'.format(str(epoch))
-    result_A5_overfit.append(
-        load_data(os.path.join('models', experiment_name, 'PESQ_results.mat'),
-                  os.path.join('models', experiment_name, 'eval_results.mat'),
-                  experiment_name))
+    try:
+        result_A5_overfit.append(
+            load_data(os.path.join('models', experiment_name, 'PESQ_results.mat'),
+                      os.path.join('models', experiment_name, 'eval_results.mat'),
+                      experiment_name))
+        print('added ', experiment_name)
+    except:
+        pass
 
-
+# plt.hist(BLSTM_A5_27['data_SDR'])
+# plt.show()
 
 """
 propor handeling of NAN
@@ -322,35 +338,24 @@ A.columns = [s.replace('data_', '') for s in A.columns]
 # A.names[A.loc[:, 'STOI'].isnull()].unique()
 # A.model_name.cat.categories
 
-models = [['dataset_4', 'dataset-4'],
-          ['OM_LSA', 'OM-LSA'],
-          ['BLSTM_A5_8', 'BLSTM-A5-8'],
-          ['BLSTM_A5_12', 'BLSTM-A5-12'],
-          ['BLSTM_A5_13', 'BLSTM-A5-13'],
-          ['BLSTM_A5_14', 'BLSTM-A5-14'],
-          ['BLSTM_A5_15', 'BLSTM-A5-15'],
-          ['BLSTM_A5_16', 'BLSTM-A5-16'],
-          ['BLSTM_A5_18', 'BLSTM-A5-18'],
-          ['BLSTM_A5_19', 'BLSTM-A5-19'],
-          ['BLSTM_A5_20', 'BLSTM-A5-20'],
-          ['BLSTM_A5_24', 'BLSTM-A5-24'],
-          ['BLSTM_A5_26', 'BLSTM-A5-26'],
-          ['BLSTM_A5_27', 'BLSTM-A5-27'],
-          ['BLSTM_A5_28', 'BLSTM-A5-28'],
-          ['BLSTM_A5_49', 'BLSTM-A5-49'],
-          ['BLSTM_A5_68', 'BLSTM-A5-68'],
-          ]
+
+models = ([['dataset_4', 'dataset-4'], ['OM_LSA', 'OM-LSA']] +
+          [['BLSTM_A5_' + str(i), 'BLSTM-A5-' + str(i)] for i in range(0,101) if 'BLSTM_A5_' + str(i) in A.model_name.cat.categories]
+          )
 
 A.model_name.cat.set_categories([s[0] for s in models], inplace=True)
 A.model_name.cat.categories = [s[1] for s in models]
+# [s.replace('_','-') for s in A.model_name.cat.categories]
 
 AA = A.groupby(['model_name']).mean().T
 # Paper table
-
-colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 I = [int(s[1].split('-')[-1]) for s in models[2:]]
-for v, c in zip(AA.iloc[:, 2:].values, colors):
+for v, c, l in zip(AA.iloc[:, 2:].values, colors, AA.index):
     plt.plot(I, v, '-o', color=c)
+    plt.xlabel('Epoch')
+    plt.ylabel(l.replace('mos', 'MOS'))
+    # plt.xlim(None, 30)
+    plt.savefig(os.path.join(fig_dir, l + '.png'))
     plt.show()
 AA
 
@@ -540,7 +545,7 @@ def load_lre_results():
                 with open(os.path.join(dirpath, 'c_primary.txt'), 'r') as f:
                     lines = f.readlines()
                 for line in lines:
-                    model = model.replace('results_', '').replace('results', 'baseline')
+                    model = model.replace('results_', '').replace('results', 'baseline').replace('BLSMT', 'BLSTM')
                     backend, mode = dirpath.split(os.path.sep)[-2:]
                     result_name, result_value = line.split()
                     result_value = float(result_value)
@@ -578,37 +583,82 @@ def load_lre_results():
 df = load_lre_results()
 print(df.drop(['model'], axis=1).duplicated().sum())
 df.model.cat.categories
-
-# Paper table
-models = [['baseline', 'Baseline'],
-          ['OM_LSA', 'OM-LSA'],
-          ['BLSMT_A5_8', 'BLSTM-A5-8'],
-          ['BLSMT_A5_12', 'BLSTM-A5-12'],
-          ['BLSMT_A5_13', 'BLSTM-A5-13'],
-          ['BLSMT_A5_14', 'BLSTM-A5-14'],
-          ['BLSMT_A5_15', 'BLSTM-A5-15'],
-          ['BLSMT_A5_16', 'BLSTM-A5-16'],
-          ['BLSMT_A5_18', 'BLSTM-A5-18'],
-          ['BLSMT_A5_19', 'BLSTM-A5-19'],
-          ['BLSMT_A5_20', 'BLSTM-A5-20'],
-          ['BLSMT_A5_24', 'BLSTM-A5-24'],
-          ['BLSMT_A5_26', 'BLSTM-A5-26'],
-          ['BLSMT_A5_27', 'BLSTM-A5-27'],
-          ['BLSMT_A5_28', 'BLSTM-A5-28'],
-          ['BLSMT_A5_49', 'BLSTM-A5-49'],
-          ['BLSMT_A5_68', 'BLSTM-A5-68'],
-          ['BLSMT_A5', 'BLSTM-A5-97'],
-          ]
+df.result_name.cat.categories
 
 
-def table(df, models):
+def table(df, models, relative=False, round=None):
     df = df.drop('mode', axis=1)
     df = df.drop('result_name', axis=1)
     df.model.cat.set_categories([s[0] for s in models], inplace=True)
     df.model.cat.categories = [s[1] for s in models]
     df = df.pivot(index='backend', columns='model', values='result_value')
+    if not relative:
+        if round is None:
+            df = df.round(3)
+    else:
+        df = ((1 - df.T / df.iloc[:, 0].values).T * 100)
+        if round is None:
+            df = df.round(1)
     return df
 
+
+# Paper =================
+
+lre_models = [
+    ['baseline', 'Baseline'],
+    ['OM_LSA', 'OM-LSA'],
+    ['BLSTM_A5_27', 'BLSTM-A5-27'],]
+
+lre_table1 = df.query("(model in {}) & result_name == 'EQ_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models]))
+table(lre_table1, lre_models)
+table(lre_table1, lre_models, relative=True)
+
+lre_table2 = df.query("(model in {}) & result_name == 'MLS14_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models]))
+table(lre_table2, lre_models)
+table(lre_table2, lre_models, relative=True)
+
+
+lre_table3 = df.query("(model in {}) & result_name == 'VAST_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models]))
+table(lre_table3, lre_models)
+table(lre_table3, lre_models, relative=True)
+
+
+
+
+lre_models2 = [
+    ['baseline', 'Baseline'],
+    ['OM_LSA', 'OM-LSA'],
+    ['BLSTM_A5_8', 'BLSTM-A5-8'],
+    ['BLSTM_A5_13', 'BLSTM-A5-13'],
+    ['BLSTM_A5_14', 'BLSTM-A5-14'],
+    ['BLSTM_A5_27', 'BLSTM-A5-27'],
+    ['BLSTM_A5_28', 'BLSTM-A5-28'],]
+
+lre_table1 = df.query("(model in {}) & result_name == 'EQ_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models2]))
+table(lre_table1, lre_models2).iloc[[False, False, True, False, False, True]]
+table(lre_table1, lre_models2, relative=True).iloc[[False, False, True, False, False, True]]
+
+lre_table2 = df.query("(model in {}) & result_name == 'MLS14_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models2]))
+table(lre_table2, lre_models2).iloc[[False, False, True, False, False, True]]
+table(lre_table2, lre_models2, relative=True).iloc[[False, False, True, False, False, True]]
+
+lre_table3 = df.query("(model in {}) & result_name == 'VAST_ACT_COST' & mode == 'eval'".format([s[0] for s in lre_models2]))
+table(lre_table3, lre_models2).iloc[[False, False, True, False, False, True]]
+table(lre_table3, lre_models2, relative=True).iloc[[False, False, True, False, False, True]]
+
+
+# for t__ in (lre_table1, lre_table2, lre_table3):
+#     print(table(t__, lre_models2, relative=False).iloc[[False, False, True, False, False, True]].to_latex())
+
+# Paper table
+models = ([['baseline', 'Baseline'], ['OM_LSA', 'OM-LSA']] +
+          [['BLSTM_A5_' + str(i), 'BLSTM-A5-' + str(i)] for i in range(0, 101) if 'BLSTM_A5_' + str(i) in df.model.cat.categories]
+          )
+
+# BLSTM_A9
+# models = ([['baseline', 'Baseline'], ['OM_LSA', 'OM-LSA']] +
+#           [['BLSTM_A9_' + str(i), 'BLSTM-A9-' + str(i)] for i in range(0, 101) if 'BLSTM_A9_' + str(i) in df.model.cat.categories]
+#           )
 
 a = df.query("(model in {}) & result_name == 'VAST_ACT_COST' & mode == 'eval'".format([s[0] for s in models]))
 a = table(a, models)
@@ -638,9 +688,67 @@ u.style.format(lambda s: '{:.3f}'.format(s))
 #==============================================================================
 # LRE evaluation plot VAST
 #==============================================================================
-
+# 'EQ_ACT_COST' 'MLS14_ACT_COST' 'VAST_ACT_COST'
 d = df.query("(model in {}) & result_name == 'VAST_ACT_COST' & mode == 'dev'".format([s[0] for s in models]))
 d = table(d, models)
+
+
+d_ = d.iloc[[False, False, True, False, False, True]]
+a_ = a.iloc[[False, False, True, False, False, True]]
+
+I = [s[1].split('-')[-1] for s in models[2:]]
+for v, c, l in zip(a_.iloc[:, 2:].values, colors, a_.index):
+    plt.plot(I, v, '-o', color=c, label=l)
+# plt.axhline(a_['Baseline'].iat[0], c=colors[0])
+# plt.axhline(a_['Baseline'].iat[1], c=colors[1])
+for v, c, l in zip(d_.iloc[:, 2:].values, colors, d_.index):
+    plt.plot(I, v, '--o', color=c, label='Dev ' + l)
+# plt.axhline(d_['Baseline'].iat[0], c=colors[0])
+# plt.axhline(d_['Baseline'].iat[1], c=colors[1])
+
+plt.legend()
+plt.xlabel('Epoch')
+plt.ylabel('VAST cost')
+plt.savefig(os.path.join(fig_dir, 'LRE_1.png'))
+plt.show()
+
+
+I = [s[1].split('-')[-1] for s in models[2:]]
+for v, c, l in zip(a_.iloc[:, 2:].values, colors, a_.index):
+    plt.plot(I, v, '-o', color=c, label=l)
+# plt.axhline(a_['Baseline'].iat[0], c=colors[0])
+# plt.axhline(a_['Baseline'].iat[1], c=colors[1])
+for v, c, l in zip(d_.iloc[:, 2:].values, colors, d_.index):
+    plt.plot(I, v, '--o', color=c, label='Dev ' + l)
+# plt.axhline(d_['Baseline'].iat[0], c=colors[0])
+# plt.axhline(d_['Baseline'].iat[1], c=colors[1])
+plt.xlim(4, 31)
+plt.legend()
+plt.xlabel('Epoch')
+plt.ylabel('VAST cost')
+plt.savefig(os.path.join(fig_dir, 'LRE_2.png'))
+plt.show()
+
+
+
+
+a.iloc[:,:18]
+
+plt.scatter(d_.iloc[0, 2:].values, a_.iloc[0, 2:].values, c=colors[0])
+plt.scatter(d_.iloc[1, 2:].values, a_.iloc[1, 2:].values, c=colors[1])
+plt.scatter(d.iloc[:, 2:].values.mean(axis=0), a.iloc[:, 2:].values.mean(axis=0), c=colors[2])
+plt.scatter(d.iloc[-4:, 2:].values.mean(axis=0), a.iloc[-4:, 2:].values.mean(axis=0), c=colors[3])
+plt.show()
+"""
+The best eval score has among the lowest dev score, but multiple best dev scores are worse in eval
+"""
+
+
+
+#==============================================================================
+# nn
+#==============================================================================
+
 
 
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
@@ -708,3 +816,112 @@ plt.ylim(.16, .27)
 # plt.savefig('eval_dev_over_epochs.pdf')
 # plt.ylim(.169, .20)
 plt.show()
+
+
+
+
+
+
+
+#==============================================================================
+# presentation figures
+#==============================================================================
+
+from src.data.data_functions import load_soundfile
+from src.features.features_functions import mod_hann, stft
+filename = 'sample_4.wav'
+x = load_soundfile('data/processed/dataset_4/val/x/'+filename)
+y = load_soundfile('data/processed/dataset_4/val/y/'+filename)
+z = load_soundfile('data/interim/dataset_4_val/BLSTM_A5_23/'+filename)
+
+f, t, X = stft(x, fs=8000, window=mod_hann(256), nperseg=256,
+               noverlap=128, return_onesided=True)
+f, t, Y = stft(y, fs=8000, window=mod_hann(256), nperseg=256,
+               noverlap=128, return_onesided=True)
+f, t, Z = stft(z, fs=8000, window=mod_hann(256), nperseg=256,
+               noverlap=128, return_onesided=True)
+
+X_m = np.abs(X)
+Y_m = np.abs(Y)
+Z_m = np.abs(Z)
+
+A_iam = X_m/Y_m
+A = Z_m/Y_m
+
+
+
+mm0 = np.log(min(X_m.min(), Y_m.min(), Z_m.min()))
+mm1 = np.log(max(X_m.max(), Y_m.max(), Z_m.max()))
+plt.viridis()
+for B, t in zip((X_m, Y_m, Z_m), ('Speech $|S|$', 'Noisy Speech $|Y|$', 'Enhanced Speech $|\hat S|$')):
+    plt.matshow(np.log(B[::-1]),vmin=mm0, vmax=mm1).axes.xaxis.set_ticks_position('bottom')
+    plt.title(t)
+    plt.xlabel('Time')
+    plt.ylabel('Frequency')
+    ax = plt.gca()
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    plt.savefig(os.path.join(fig_dir, t.split(' ')[0]+'.png'), transparent=True)
+    plt.show()
+
+# plt.hist(np.log(A).flatten(), 100)
+# plt.show()
+# plt.hist(np.log(A_iam).flatten(), 100)
+# plt.show()
+
+plt.viridis()
+for B, t in zip((A_iam, A), ('Ideal Amplitude Mask', 'Estimated Mask')):
+    plt.matshow(np.log(B[::-1]),
+                vmin= np.log(min(A_iam.min(),  A.min())),
+                vmax=1
+                ).axes.xaxis.set_ticks_position('bottom')
+    plt.title(t)
+    plt.xlabel('Time')
+    plt.ylabel('Frequency')
+    ax = plt.gca()
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    plt.savefig(os.path.join(fig_dir, t.replace(' ','_')+'.png'), transparent=True)
+    plt.show()
+
+w, h = plt.figaspect(1/3.)
+fig = plt.figure(figsize=(w,h))
+plt.plot(x)
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+ax = plt.gca()
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+plt.savefig(os.path.join(fig_dir, 'time_speech.png'), transparent=True)
+plt.show()
+
+w, h = plt.figaspect(1/3.)
+fig = plt.figure(figsize=(w,h))
+plt.plot(y)
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+ax = plt.gca()
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+plt.savefig(os.path.join(fig_dir, 'time_noisy_speech.png'), transparent=True)
+plt.show()
+
+
+w, h = plt.figaspect(1/3.)
+fig = plt.figure(figsize=(w,h))
+plt.plot(z)
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+ax = plt.gca()
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+plt.savefig(os.path.join(fig_dir, 'time_enhanced_speech.png'), transparent=True)
+plt.show()
+
+    # plt.tick_params(
+    #     axis='x',          # changes apply to the x-axis
+    #     which='both',      # both major and minor ticks are affected
+    #     bottom='off',      # ticks along the bottom edge are off
+    #     top='off',         # ticks along the top edge are off
+    #     left='off',
+    #     right='off',)

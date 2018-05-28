@@ -117,7 +117,7 @@ def PESQ_evalfolder(reference_dir, degraded_dir, output_path, fs):
     assert set(degraded_paths) == set(walk_dir(degraded_dir))
     print('Warning: PESQ will save a file in the current working directory')
     mos_list, mos_lqo_list = PESQ_evalpaths(reference_paths, degraded_paths,
-                                            output_path, fs=fs)
+                                            fs=fs)
 
     print('PESQ failed for {} samples'.format(np.isnan(mos_list).sum()))
 

@@ -1,5 +1,8 @@
 function evaluate_folders(reference_dir,degraded_dir,output_path)
 
+reference_dir = [reference_dir '/'];
+degraded_dir = [degraded_dir '/'];
+
 reference_filenames = dir([reference_dir '*.wav']);
 %degraded_filenames = dir([degraded_dir '*.wav']);
 [filepath,~,~] = fileparts(output_path);
@@ -18,7 +21,7 @@ for i=1:length(filenames)
     [x, fs_r] = audioread(rfp);
     [xh, fs_d] = audioread(dfp);
     assert(fs_r == fs_d)
-    fs = fs_r
+    fs = fs_r;
 
     x = transpose(x);
     xh = transpose(xh);
@@ -47,4 +50,5 @@ for i=1:length(filenames)
 end
 
 save(output_path, 'data_STOI','data_eSTOI','data_SDR','filenames','reference_dir','degraded_dir')
+fprintf(output_path)
 end

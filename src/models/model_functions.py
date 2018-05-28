@@ -129,6 +129,9 @@ def checkpoint_model_(savepath, model, save_as_cpu=True, is_best=False):
     print("Checkpoint saved to {}".format(savepath))
 
 
+def apply_mask(mask, targetY):
+    return targetY * mask
+
 #==============================================================================
 # Model Arhitectues
 #==============================================================================

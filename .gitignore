@@ -2,8 +2,8 @@ complex_networks/
 wavelets_and_filter_banks/
 data/interim
 data/processed
-data/raw
-src_old
+old_src
+old_data
 src/snippits.py
 src/external
 /models

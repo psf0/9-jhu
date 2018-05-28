@@ -6,6 +6,9 @@ Created on Wed Oct 18 23:39:11 2017
 @author: peter
 """
 
+
+
+
 """
 learn initialZATION h0,c0 layers?
 EXperiment use augmentstyle data is it better?

@@ -26,7 +26,7 @@ from src.models.model_functions import apply_mask, BLSTM_A, save_checkpoint
 # Paremeters
 #==============================================================================
 
-# batch_size is douple, learning is a little more stable, but not faster
+# batch_size is douple, but not faster or slower
 p = {
     'experiment_name': 'BLSTM_A14',
     'model_class': BLSTM_A,
