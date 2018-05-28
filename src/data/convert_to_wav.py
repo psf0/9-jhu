@@ -70,21 +70,21 @@ if __name__ == '__main__':
    input_names = [os.path.join(dirpath, s) for s in filenames if s.endswith('.flac')]
    soundfiles_to_wav(input_dir, output_dir, input_names)
 
-#    # Telephone data in lre17_dev
-#    input_dir = os.path.join(*['data','raw','lre17_dev'])
-#    output_dir = os.path.join(*['data','processed', 'lre17tel_dev'])
-#    for (dirpath, dirnames, filenames) in os.walk(input_dir):
-#            break
-#    input_names = [os.path.join(dirpath, s) for s in filenames if s.endswith('.sph')]
-#    soundfiles_to_wav(input_dir, output_dir, input_names)
-#
-#    # Telephone data in lre17_eval
-#    input_dir = os.path.join(*['data','raw','lre17_eval'])
-#    output_dir = os.path.join(*['data','processed', 'lre17tel_eval'])
-#    for (dirpath, dirnames, filenames) in os.walk(input_dir):
-#            break
-#    input_names = [os.path.join(dirpath, s) for s in filenames if s.endswith('.sph')]
-#    soundfiles_to_wav(input_dir, output_dir, input_names)
+   # Telephone data in lre17_dev
+   input_dir = os.path.join(*['data','raw','lre17_dev'])
+   output_dir = os.path.join(*['data','processed', 'lre17tel_dev'])
+   for (dirpath, dirnames, filenames) in os.walk(input_dir):
+           break
+   input_names = [os.path.join(dirpath, s) for s in filenames if s.endswith('.sph')]
+   soundfiles_to_wav(input_dir, output_dir, input_names)
+
+   # Telephone data in lre17_eval
+   input_dir = os.path.join(*['data','raw','lre17_eval'])
+   output_dir = os.path.join(*['data','processed', 'lre17tel_eval'])
+   for (dirpath, dirnames, filenames) in os.walk(input_dir):
+           break
+   input_names = [os.path.join(dirpath, s) for s in filenames if s.endswith('.sph')]
+   soundfiles_to_wav(input_dir, output_dir, input_names)
 
 
 
