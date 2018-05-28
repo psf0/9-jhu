@@ -11,7 +11,7 @@ import os
 
 from src.data.data_functions import Data_synthesis_1,
 from src.features.features_functions import makedir, save_audio_
-from src.datasets.make_dataset_1 import save_preproccesing_parameters
+from src.data.make_dataset_1 import save_preproccesing_parameters
 
 
 def make_dataset_4(output_dir):
